@@ -5,6 +5,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,8 @@ import dev.langchain4j.model.output.Response;
 @RequestMapping("/api/files")
 public class LocalAIChatController  {
 	
+	Logger logger = LoggerFactory.getLogger(LocalAIChatController.class);
+	
 	@Autowired
 	LocalAILLMService llmService;
 
@@ -38,10 +43,10 @@ public class LocalAIChatController  {
 
         try {
             String fileContent = new String(file.getBytes());
-            System.out.println("Prompt: "+prompt);
-            System.out.println("Input file name: "+file.getName());
-            System.out.println("Input file size: "+file.getSize());
-            System.out.println("Input file text: "+new String(file.getBytes()));
+            logger.info("Prompt: "+prompt);
+            logger.info("Input file name: "+file.getName());
+            logger.info("Input file size: "+file.getSize());
+            logger.info("Input file text: "+new String(file.getBytes()));
             
             String response = migrate(prompt, fileContent);
             return ResponseEntity.ok(response);

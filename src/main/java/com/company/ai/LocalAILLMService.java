@@ -8,6 +8,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +24,8 @@ import dev.langchain4j.model.output.Response;
 @Service
 public class LocalAILLMService {
 	
+	Logger logger = LoggerFactory.getLogger(LocalAILLMService.class);
+		
 	@Value("${localai.baseURL}")
 	private String baseURL;
 	
@@ -37,7 +41,7 @@ public class LocalAILLMService {
 		
 	public String chat(String prompt, String context) {
 		Instant start = Instant.now();
-		System.out.println("Query started: "+start);
+		logger.info("Query started: "+start);
 		ChatLanguageModel model = LocalAiChatModel.builder()
 		        .baseUrl(baseURL)
 		        .modelName(modelName)
@@ -52,14 +56,14 @@ public class LocalAILLMService {
 		var chatMessages = new ArrayList<ChatMessage>();
 		chatMessages.add(responseInDutch);
 		chatMessages.add(question);
-		System.out.println("Processing request....."); 
+		logger.info("Processing request....."); 
 		Response<AiMessage> response = model.generate(chatMessages);
 		Instant finish = Instant.now();
 		long timeElapsed = Duration.between(start, finish).toMinutes();
-		System.out.println("Query end: "+finish);
-		System.out.println("Total minutes took: "+ timeElapsed);
-		System.out.println(response.content().text());
-		System.out.println("Processing completed."); 
+		logger.info("Query end: "+finish);
+		logger.info("Total minutes took: "+ timeElapsed);
+		logger.info(response.content().text());
+		logger.info("Processing completed."); 
 	  return response.content().text();	
 	}
 	
